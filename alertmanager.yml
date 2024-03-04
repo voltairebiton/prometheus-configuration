@@ -1,0 +1,22 @@
+global:
+  resolve_timeout: 1m
+
+route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 5m
+  receiver: 'webhook-notification'
+receivers:
+  - name: 'webhook-notification'
+    webhook_configs:
+    - url: https://atc-apm.nathanhr.ae/v1/email/send
+      send_resolved: true
+      http_config:
+        bearer_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDlhOTczMjA1OGUxYWQ5MDdmZWZhNmYiLCJhdXRob3JpemVkIjp0cnVlLCJleHAiOjIwNDc4NTMwOTAsInR5cGUiOiJhY2Nlc3MifQ.eP009uXe1veXE8icmPOH049guVTFf2oPWP7TPo-VoHI
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'dev', 'instance']
